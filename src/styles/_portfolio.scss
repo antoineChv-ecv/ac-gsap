@@ -1,0 +1,166 @@
+/* Portfolio Section */
+.portfolio-section {
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+    min-height: 150vh;
+    /* Taller section */
+    background-color: #FFFDF5;
+    /* Cream background */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.portfolio-bg-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 0;
+    pointer-events: none;
+    line-height: 0.8;
+}
+
+.portfolio-bg-line {
+    font-family: var(--font-main);
+    font-size: 15vw;
+    font-weight: 900;
+    color: #b30000;
+    /* Red */
+    text-transform: uppercase;
+    white-space: nowrap;
+    letter-spacing: -5px;
+    opacity: 0.8;
+
+    @media screen and (max-width: 768px) {
+        font-size: 20vw;
+        letter-spacing: -2px;
+    }
+}
+
+.portfolio-grid {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 1400px;
+    height: 150vh;
+    /* Match section height */
+    margin: 0 auto;
+    display: block;
+    pointer-events: none;
+    /* Let clicks pass through if needed, but usually images are just visual */
+}
+
+.portfolio-item {
+    position: absolute;
+    background-color: #ccc;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    border: 8px solid #FFFDF5;
+    /* White/Cream border */
+    transition: transform 0.5s ease;
+
+    &:hover {
+        transform: scale(1.05) rotate(0deg) !important;
+        z-index: 20;
+    }
+}
+
+/* Scattered Layout */
+.portfolio-item.item-1 {
+    width: 25vw;
+    height: 35vw;
+    top: 15%;
+    left: 10%;
+    transform: rotate(-5deg);
+
+    @media screen and (max-width: 768px) {
+        width: 50vw;
+        height: 70vw;
+        top: 10%;
+        left: 5%;
+    }
+}
+
+.portfolio-item.item-2 {
+    width: 22vw;
+    height: 30vw;
+    top: 10%;
+    right: 15%;
+    transform: rotate(8deg);
+
+    @media screen and (max-width: 768px) {
+        width: 40vw;
+        height: 50vw;
+        top: 15%;
+        right: 5%;
+    }
+}
+
+.portfolio-item.item-3 {
+    width: 30vw;
+    height: 30vw;
+    /* Square-ish */
+    bottom: 10%;
+    left: 40%;
+    transform: translateX(-50%) rotate(-3deg);
+
+    @media screen and (max-width: 768px) {
+        width: 60vw;
+        height: 60vw;
+        bottom: 20%;
+        left: 50%;
+    }
+}
+
+.portfolio-cta-container {
+    position: absolute;
+    bottom: 5vh;
+    left: 5vh;
+    z-index: 20;
+    pointer-events: auto;
+
+    @media screen and (max-width: 768px) {
+        bottom: 5vh;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        text-align: center;
+    }
+}
+
+.follow-pill-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #E60023;
+    /* Red */
+    color: #fff;
+    text-decoration: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    font-family: var(--font-main);
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    box-shadow: 0 10px 20px rgba(230, 0, 35, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(230, 0, 35, 0.5);
+    }
+
+    svg {
+        width: 20px;
+        height: 20px;
+    }
+}

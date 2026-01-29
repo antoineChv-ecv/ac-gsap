@@ -1,0 +1,20 @@
+/* Main Stylesheet - Aggregates all partials */
+
+/* 1. Base / Variables */
+@import './styles/variables';
+@import './styles/global';
+
+/* 2. Components */
+@import './styles/preloader';
+@import './styles/cursor';
+@import './styles/header';
+@import './styles/footer';
+
+/* 3. Sections */
+@import './styles/hero';
+@import './styles/about';
+@import './styles/photostrip';
+@import './styles/project_slider';
+
+@import './styles/portfolio';
+@import './styles/project_page';

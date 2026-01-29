@@ -1,0 +1,192 @@
+/* Hero Section */
+.hero-section {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 2rem;
+
+    @media screen and (max-width: 768px) {
+        padding: 1rem;
+        min-height: 80vh;
+    }
+}
+
+.hero-title {
+    font-family: var(--font-main);
+    font-size: 6rem;
+    font-weight: 900;
+    text-align: center;
+    z-index: 10;
+    position: relative;
+    line-height: 0.9;
+    letter-spacing: -2px;
+    text-transform: uppercase;
+
+    @media screen and (max-width: 768px) {
+        font-size: 13vw;
+        /* Responsive vw units */
+        letter-spacing: -1px;
+        margin-top: 2rem;
+    }
+}
+
+.hero-title div {
+    display: inline-block;
+    /* For transform animation */
+}
+
+.hero-title .italic {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    display: block;
+    font-size: 5rem;
+    margin-top: -1rem;
+    opacity: 1;
+    /* GSAP will handle opacity */
+
+    @media screen and (max-width: 768px) {
+        font-size: 8vw;
+        margin-top: -0.5rem;
+    }
+}
+
+.hero-images {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.hero-img {
+    position: absolute;
+    background-color: #ccc;
+    /* Placeholder */
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+
+    @media screen and (max-width: 768px) {
+        opacity: 0.4;
+    }
+}
+
+.hero-img.img-1 {
+    width: 200px;
+    height: 300px;
+    top: 10%;
+    left: 10%;
+    transform: rotate(-5deg);
+
+    @media screen and (max-width: 768px) {
+        width: 120px;
+        height: 180px;
+        top: 5%;
+        left: 5%;
+    }
+}
+
+.hero-img.img-2 {
+    width: 250px;
+    height: 200px;
+    bottom: 15%;
+    left: 20%;
+    transform: rotate(3deg);
+
+    @media screen and (max-width: 768px) {
+        width: 150px;
+        height: 120px;
+        bottom: 10%;
+        left: 5%;
+    }
+}
+
+.hero-img.img-3 {
+    width: 300px;
+    height: 400px;
+    top: 15%;
+    right: 10%;
+    transform: rotate(5deg);
+
+    @media screen and (max-width: 768px) {
+        width: 160px;
+        height: 220px;
+        top: 10%;
+        right: 5%;
+    }
+}
+
+/* Additional Scattered Images */
+
+/* Bottom Right */
+.hero-img.img-4 {
+    width: 280px;
+    height: 200px;
+    bottom: 18%;
+    right: 8%;
+    transform: rotate(4deg);
+    z-index: 1;
+}
+
+/* Center-ish / Floating */
+.hero-img.img-5 {
+    width: 150px;
+    height: 220px;
+    top: 25%;
+    left: 40%;
+    transform: rotate(10deg);
+    z-index: 0;
+    filter: blur(1px);
+    /* Depth */
+    opacity: 0.6;
+}
+
+/* Bottom Center */
+.hero-img.img-6 {
+    width: 200px;
+    height: 150px;
+    bottom: 8%;
+    left: 42%;
+    transform: rotate(-5deg);
+    z-index: 4;
+}
+
+/* Far Left */
+.hero-img.img-7 {
+    width: 160px;
+    height: 240px;
+    top: 45%;
+    left: 2%;
+    transform: rotate(15deg);
+    z-index: 0;
+    opacity: 0.7;
+}
+
+/* Far Right */
+.hero-img.img-8 {
+    width: 180px;
+    height: 180px;
+    top: 55%;
+    right: 5%;
+    transform: rotate(-10deg);
+    z-index: 2;
+}
+
+@media screen and (max-width: 768px) {
+
+    /* Hide extra images on mobile to prevent clutter */
+    .hero-img.img-4,
+    .hero-img.img-5,
+    .hero-img.img-6,
+    .hero-img.img-7,
+    .hero-img.img-8 {
+        display: none;
+    }
+}

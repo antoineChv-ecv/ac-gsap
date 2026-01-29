@@ -1,0 +1,19 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-main);
+    overflow-x: hidden;
+}
+
+/* Global Mobile Adjustments if needed generally */
+@media screen and (max-width: 768px) {
+    body {
+        overflow-x: hidden;
+    }
+}
