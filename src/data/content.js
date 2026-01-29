@@ -48,7 +48,7 @@ const courseAutoGallery = getImagesByCategory('Course Auto');
 const voitureGallery = getImagesByCategory('Voiture');
 
 const batimentGallery = getImagesByCategory('Bâtiment');
-const rueGallery = getImagesByCategory('Rue');
+
 
 const portraitVilleGallery = getImagesByCategory('Ville');
 
@@ -127,13 +127,13 @@ export const content = {
 
         {
             id: 5,
-            title: "RUE",
+            title: "BATIMENT",
             category: "Urbain",
-            image: rueGallery[0]?.url || img2,
+            image: batimentGallery[0]?.url || img2,
             subtitle: "Instants Volés",
-            location: "Rue",
+            location: "Batiment",
             description: "La vie quotidienne capturée sur le vif, brute et authentique.",
-            gallery: rueGallery
+            gallery: batimentGallery
         },
 
         // --- PORTRAIT ---

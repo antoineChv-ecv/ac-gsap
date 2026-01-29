@@ -1,27 +1,28 @@
-import React, { useRef, useLayoutEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import TransitionLink from '../components/TransitionLink';
-import Header from '../components/Header';
-import { content } from '../data/content';
+import React, { useRef, useLayoutEffect } from 'react'; // useLayoutEffect pour des calculs synchrones avant peinture
+import { useParams } from 'react-router-dom'; // Hook pour récupérer les paramètres d'URL (id)
+import gsap from 'gsap'; // GSAP pour animations
+import { ScrollTrigger } from 'gsap/ScrollTrigger'; // Plugin ScrollTrigger
+import TransitionLink from '../components/TransitionLink'; // Lien avec transition
+import Header from '../components/Header'; // En-tête
+import { content } from '../data/content'; // Données du projet
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger); // Enregistrement
 
 const ProjectDetails = () => {
-    const { id } = useParams();
-    const projectId = parseInt(id) || 0;
-    const project = content.projects[projectId] || content.projects[0];
-    const containerRef = useRef(null);
-    const trackRef = useRef(null);
+    const { id } = useParams(); // Récupère l'ID depuis l'URL /project/:id
+    const projectId = parseInt(id) || 0; // Convertit en entier, fallback sur 0
+    const project = content.projects[projectId] || content.projects[0]; // Sélectionne le projet correspondant
+    const containerRef = useRef(null); // Ref pour le conteneur principal
+    const trackRef = useRef(null); // Ref pour la piste horizontale (track)
 
+    // Fonction appelée quand une image est chargée pour recalculer les positions de ScrollTrigger
     const handleImageLoad = () => {
         ScrollTrigger.refresh();
     };
 
     // Utilisation de useLayoutEffect pour éviter les flashs visuels avec ScrollTrigger
     useLayoutEffect(() => {
-        window.scrollTo(0, 0);
+        window.scrollTo(0, 0); // Réinitialise le scroll en haut
 
         const ctx = gsap.context(() => {
             const track = trackRef.current;
@@ -29,41 +30,45 @@ const ProjectDetails = () => {
 
             // Activation du scroll horizontal uniquement sur Desktop (> 900px)
             if (viewportWidth > 900 && track) {
-                // Initial calculation
-                let totalWidth = track.scrollWidth;
 
+                // Animation de défilement horizontal de la piste
                 gsap.to(track, {
                     x: () => {
-                        // Recalculate width dynamically during refresh/execution
+                        // Recalcul dynamique de la distance à parcourir : -(largeur totale - largeur fenêtre)
                         return -(track.scrollWidth - window.innerWidth);
                     },
-                    ease: "none",
+                    ease: "none", // Linéaire
                     scrollTrigger: {
-                        trigger: containerRef.current,
-                        start: "top top",
-                        end: () => `+=${track.scrollWidth - window.innerWidth}`, // Dynamic end based on content
-                        pin: true, // Épingle le conteneur pendant le scroll
-                        scrub: 1, // Fluidité du scroll
-                        invalidateOnRefresh: true,
+                        trigger: containerRef.current, // Déclencheur : conteneur principal
+                        start: "top top", // Commence tout en haut
+                        // La durée du scroll (end) correspond à la largeur de défilement
+                        end: () => `+=${track.scrollWidth - window.innerWidth}`,
+                        pin: true, // Épingle la section (la fige visuellement pendant le scroll physique)
+                        scrub: 1, // Synchronisation fluide
+                        invalidateOnRefresh: true, // Recalcule les valeurs au redimensionnement
                     }
                 });
             }
         }, containerRef);
 
         return () => {
-            // Nettoyage impératif pour éviter les conflits de mem
+            // Nettoyage impératif pour éviter les conflits de mémoire ou doublons
             ScrollTrigger.getAll().forEach(t => t.kill());
             ctx.revert();
         };
-    }, [projectId]);
+    }, [projectId]); // Se ré-exécute si l'ID du projet change
 
     return (
         <React.Fragment>
-            <Header />
+            <Header /> {/* Barre de navigation */}
+
+            {/* Conteneur épinglé pour le scroll horizontal */}
             <div className="project-page" ref={containerRef}>
                 <div className="horizontal-section">
+                    {/* Piste contenant tous les éléments (cartes) alignés horizontalement */}
                     <div className="horizontal-track" ref={trackRef}>
 
+                        {/* Carte d'introduction (Titre, Desc) */}
                         <div className="project-card intro-card">
                             <div className="intro-content">
                                 <span className="project-category">{project.category}</span>
@@ -75,12 +80,15 @@ const ProjectDetails = () => {
                                 </p>
                             </div>
                         </div>
+
+                        {/* Boucle sur la galerie d'images */}
                         {project.gallery && project.gallery.map((item, index) => (
                             <React.Fragment key={index}>
+                                {/* Carte Image : classe dynamique selon orientation landscape/portrait */}
                                 <div className={`project-card image-card ${item.type === 'landscape' ? 'wide' : 'portrait'}`}>
                                     <img src={item.url} alt={`Gallery ${index}`} onLoad={handleImageLoad} />
                                 </div>
-                                {/* Insert quote after the second image (index 1) */}
+                                {/* Insertion d'une citation après la deuxième image (index 1) */}
                                 {index === 1 && (
                                     <div className="project-card text-card">
                                         <blockquote>
@@ -93,16 +101,20 @@ const ProjectDetails = () => {
                     </div>
                 </div>
 
+                {/* Navigation fixe en bas de page (Précédent / Suivant) */}
                 <div className="project-fixed-bottom-nav">
+                    {/* Lien retour Accueil */}
                     <TransitionLink to="/" className="fixed-nav-link left">
                         <span className="icon">←</span>
                         <span>{content.ui.home}</span>
                     </TransitionLink>
 
+                    {/* Indicateur central (Titre du projet) */}
                     <div className="fixed-nav-progress">
                         <span>{project.title}</span>
                     </div>
 
+                    {/* Lien Projet Suivant (boucle avec modulo) */}
                     <TransitionLink to={`/project/${(projectId + 1) % content.projects.length}`} className="fixed-nav-link right">
                         <span>{content.ui.next}</span>
                         <span className="icon">→</span>

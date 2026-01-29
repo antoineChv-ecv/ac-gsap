@@ -1,96 +1,81 @@
-/* -------------------------------------------------------------------------- */
-/*                                   IMPORTS                                  */
-/* -------------------------------------------------------------------------- */
-import React, { useState, useRef, useEffect } from 'react';
-import gsap from 'gsap';
-import TransitionLink from './TransitionLink';
-import { content } from '../data/content';
+import React, { useState, useRef, useEffect } from 'react'; // Import des hooks React
+import gsap from 'gsap'; // Import GSAP pour les animations
+import TransitionLink from './TransitionLink'; // Import lien personnalisé
+import { content } from '../data/content'; // Import données du contenu
 
-/* -------------------------------------------------------------------------- */
-/*                                 COMPOSANT                                  */
-/* -------------------------------------------------------------------------- */
-// Composant fonctionnel ProjectSlider pour afficher un carrousel de projets
 const ProjectSlider = () => {
+    const [currentIndex, setCurrentIndex] = useState(0); // Index de la diapositive actuelle
+    const [isAnimating, setIsAnimating] = useState(false); // État pour bloquer l'interaction pendant l'animation
 
-    /* ------------------------------ STATE & REFS ------------------------------ */
-    // État pour suivre l'index du slide actuellement affiché
-    const [currentIndex, setCurrentIndex] = useState(0);
-    // État pour savoir si une animation est en cours (pour éviter les clics multiples)
-    const [isAnimating, setIsAnimating] = useState(false);
+    // Références pour les éléments du slider
+    const bgRefs = useRef([]); // Arrière-plans
+    const centerRefs = useRef([]); // Images centrales
+    const titleRefs = useRef([]); // Titres
+    const subtitleRefs = useRef([]); // Sous-titres
 
-    // Références pour les éléments du DOM à animer
-    const bgRefs = useRef([]); // Références pour les images de fond
-    const centerRefs = useRef([]); // Références pour les images centrales
-    const titleRefs = useRef([]); // Références pour les titres des projets
-    const subtitleRefs = useRef([]); // Références pour les sous-titres des projets
-
-    /* -------------------------------------------------------------------------- */
-    /*                               GSAP ANIMATION                               */
-    /* -------------------------------------------------------------------------- */
-    // Fonction principale de transition entre les slides
+    // Fonction principale pour changer de slide
     const goToSlide = (index, direction) => {
-        // Empêche l'animation si déjà en cours ou si on clique sur le slide actuel
+        // Bloque si une animation est en cours ou si on essaie d'aller sur la même slide
         if (isAnimating || index === currentIndex) return;
-        setIsAnimating(true); // Active l'état d'animation
+        setIsAnimating(true); // Active le verrouillage
 
-        // Calcule l'index du prochain slide en s'assurant qu'il reste dans les limites du tableau
+        // Calcul de l'index suivant avec boucle (modulo)
         const nextIndex = (index + content.projects.length) % content.projects.length;
 
-        // Définition des éléments actuels et suivants pour GSAP
+        // Groupement des éléments actuels
         const current = {
-            imgs: [bgRefs.current[currentIndex], centerRefs.current[currentIndex]], // Images du slide actuel
-            text: [titleRefs.current[currentIndex], subtitleRefs.current[currentIndex]] // Textes du slide actuel
+            imgs: [bgRefs.current[currentIndex], centerRefs.current[currentIndex]],
+            text: [titleRefs.current[currentIndex], subtitleRefs.current[currentIndex]]
         };
+        // Groupement des éléments suivants
         const next = {
-            bg: bgRefs.current[nextIndex], // Image de fond du prochain slide
-            center: centerRefs.current[nextIndex], // Image centrale du prochain slide
-            text: [titleRefs.current[nextIndex], subtitleRefs.current[nextIndex]] // Textes du prochain slide
+            bg: bgRefs.current[nextIndex],
+            center: centerRefs.current[nextIndex],
+            text: [titleRefs.current[nextIndex], subtitleRefs.current[nextIndex]]
         };
 
-        // Définit le décalage initial en X pour l'image centrale du slide entrant
+        // Direction de l'animation (décalage de 50% ou -50%)
         const xOffset = direction === 'next' ? 50 : -50;
 
-        // 1. Préparation du slide entrant (caché initialement et positionné)
-        gsap.set(next.bg, { zIndex: 1, opacity: 0 }); // Met le fond derrière et le cache
-        gsap.set(next.center, { xPercent: xOffset, opacity: 0 }); // Positionne l'image centrale et la cache
-        gsap.set(next.text, { y: 30, opacity: 0 }); // Positionne les textes et les cache
+        // Préparation de la slide suivante (états initiaux)
+        gsap.set(next.bg, { zIndex: 1, opacity: 0 });
+        gsap.set(next.center, { xPercent: xOffset, opacity: 0 });
+        gsap.set(next.text, { y: 30, opacity: 0 });
 
-        // Crée une timeline GSAP pour orchestrer les animations
+        // Création de la timeline
         const tl = gsap.timeline({
             onComplete: () => {
-                // Une fois l'animation terminée, met à jour l'index et désactive l'état d'animation
-                setCurrentIndex(nextIndex);
-                setIsAnimating(false);
+                setCurrentIndex(nextIndex); // Met à jour l'index
+                setIsAnimating(false); // Déverrouille l'interaction
             }
         });
 
-        // 2. Animation de sortie du slide actuel
-        tl.to(current.imgs, { opacity: 0, duration: 0.8, ease: "power2.inOut" }, 0) // Fait disparaître les images
-            .to(current.text, { y: -30, opacity: 0, duration: 0.6, ease: "power2.inIn" }, 0); // Fait disparaître les textes vers le haut
+        // Animation de sortie de la slide actuelle
+        tl.to(current.imgs, { opacity: 0, duration: 0.8, ease: "power2.inOut" }, 0)
+            .to(current.text, { y: -30, opacity: 0, duration: 0.6, ease: "power2.inIn" }, 0);
 
-        // 3. Animation d'entrée du nouveau slide
-        tl.to(next.bg, { zIndex: 2, opacity: 1, duration: 0.8, ease: "power2.inOut" }, 0.1) // Fait apparaître le fond
-            .to(next.center, { xPercent: 0, opacity: 1, duration: 1, ease: "power3.out" }, 0.2) // Fait apparaître l'image centrale en la déplaçant
-            .to(next.text, { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power3.out" }, 0.3); // Fait apparaître les textes avec un léger décalage
+        // Animation d'entrée de la slide suivante (légèrement décalée +0.1s, +0.2s)
+        tl.to(next.bg, { zIndex: 2, opacity: 1, duration: 0.8, ease: "power2.inOut" }, 0.1)
+            .to(next.center, { xPercent: 0, opacity: 1, duration: 1, ease: "power3.out" }, 0.2)
+            .to(next.text, { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power3.out" }, 0.3);
     };
 
-    // Fonctions pour naviguer au slide suivant ou précédent
+    // Fonctions helper pour suivant/précédent
     const nextSlide = () => goToSlide(currentIndex + 1, 'next');
     const prevSlide = () => goToSlide(currentIndex - 1, 'prev');
 
-    // Effet de bord pour l'initialisation des slides au montage du composant
+    // Effet d'initialisation des styles GSAP
     useEffect(() => {
         const ctx = gsap.context(() => {
-            // Initialisation : on cache tous les slides sauf le premier (currentIndex)
             content.projects.forEach((_, i) => {
                 if (i !== currentIndex) {
-                    // Cache les éléments des slides non actifs
+                    // Cache toutes les slides sauf l'actuelle
                     gsap.set(bgRefs.current[i], { opacity: 0, zIndex: 0 });
                     gsap.set(centerRefs.current[i], { opacity: 0 });
                     gsap.set(titleRefs.current[i], { opacity: 0 });
                     gsap.set(subtitleRefs.current[i], { opacity: 0 });
                 } else {
-                    // Assure que les éléments du slide actif sont visibles et bien positionnés
+                    // Affiche la slide actuelle
                     gsap.set(bgRefs.current[i], { opacity: 1, zIndex: 2 });
                     gsap.set(centerRefs.current[i], { opacity: 1, xPercent: 0 });
                     gsap.set(titleRefs.current[i], { opacity: 1, y: 0 });
@@ -98,23 +83,22 @@ const ProjectSlider = () => {
                 }
             });
         });
-        // Fonction de nettoyage pour réinitialiser le contexte GSAP au démontage
-        return () => ctx.revert();
-    }, []); // Le tableau vide assure que cet effet ne s'exécute qu'une seule fois au montage
+        return () => ctx.revert(); // Nettoyage
+    }, []);
 
-    /* -------------------------------------------------------------------------- */
-    /*                                 JSX RENDER                                 */
-    /* -------------------------------------------------------------------------- */
     return (
         <section className="project-slider-fullscreen">
+            {/* Rendu de toutes les slides */}
             {content.projects.map((slide, index) => (
                 <div key={index} className="slide-container">
+                    {/* Image d'arrière-plan floue */}
                     <div
                         ref={el => bgRefs.current[index] = el}
                         className="slide-bg"
                         style={{ backgroundImage: `url(${slide.image})` }}
                     />
 
+                    {/* Image centrale nette */}
                     <div className="slide-center-wrapper">
                         <div
                             ref={el => centerRefs.current[index] = el}
@@ -123,8 +107,8 @@ const ProjectSlider = () => {
                         />
                     </div>
 
+                    {/* Contenu textuel */}
                     <div className="slide-content">
-
                         <h3
                             ref={el => subtitleRefs.current[index] = el}
                             className="slide-subtitle"
@@ -143,6 +127,7 @@ const ProjectSlider = () => {
                 </div>
             ))}
 
+            {/* Boutons de navigation */}
             <button className="nav-btn prev" onClick={prevSlide}>
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
                     <circle cx="12" cy="12" r="10" />
@@ -156,6 +141,7 @@ const ProjectSlider = () => {
                 </svg>
             </button>
 
+            {/* Bouton pour explorer le projet */}
             <div className="project-slider-cta-container">
                 <TransitionLink to={`/project/${currentIndex}`} className="project-slider-cta-link">
                     {content.ui.explore}
@@ -165,6 +151,5 @@ const ProjectSlider = () => {
         </section >
     );
 };
-
 
 export default ProjectSlider;
