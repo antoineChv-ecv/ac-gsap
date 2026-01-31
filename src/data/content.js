@@ -1,16 +1,18 @@
 // Hero Images - Manual imports to ensure specific ones are used for Hero
 import img1 from '../assets/Sport/Handball/LH 07_09_2024-30-horizontal.jpg';
-import img2 from '../assets/Urbain/Bâtiment/Paris-03-vertical.jpg';
+import img2 from '../assets/Evenement_Concert/Flamme olympique/Flamme para-07-vertical.jpg';
 import img3 from '../assets/Portrait/Ville/nathan-02.jpg';
 import aboutImg from '../assets/about_illustration_1765023824604.png';
 
 // ----------------------------------------------------------------------
 // DYNAMIC ASSET LOADING
 // ----------------------------------------------------------------------
+
 const allImages = import.meta.glob('../assets/**/*.{jpg,jpeg,png,webp}', {
     eager: true,
     import: 'default'
 });
+
 
 const getImagesByCategory = (categoryKeyword, subCategories = []) => {
     return Object.entries(allImages)
@@ -47,16 +49,13 @@ const flammeGallery = getImagesByCategory('Flamme olympique');
 const courseAutoGallery = getImagesByCategory('Course Auto');
 const voitureGallery = getImagesByCategory('Voiture');
 
-const batimentGallery = getImagesByCategory('Bâtiment');
 
 
 const portraitVilleGallery = getImagesByCategory('Ville');
 
 
 const veloGallery = getImagesByCategory('Vélo');
-const badmintonGallery = getImagesByCategory('Badminton');
 const handballGallery = getImagesByCategory('Handball');
-const rugbyGallery = getImagesByCategory('rugby');
 
 
 // ----------------------------------------------------------------------
@@ -122,19 +121,6 @@ export const content = {
             gallery: handballGallery
         },
 
-
-        // --- URBAIN ---
-
-        {
-            id: 5,
-            title: "BATIMENT",
-            category: "Urbain",
-            image: batimentGallery[0]?.url || img2,
-            subtitle: "Instants Volés",
-            location: "Batiment",
-            description: "La vie quotidienne capturée sur le vif, brute et authentique.",
-            gallery: batimentGallery
-        },
 
         // --- PORTRAIT ---
         {
